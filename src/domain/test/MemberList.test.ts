@@ -34,4 +34,37 @@ describe("MemberList", () => {
     list.add(member);
     expect(list.totalFees()).toBe(1500);
   });
+
+  test("total discounted", () => {
+    member.monthlyFee = 1000;
+    member.discount = 10;
+    const other = new Member({
+      name: "Bruno Silva",
+      documentId: "87654321",
+      plan: "basic",
+      monthlyFee: 500,
+    });
+    list.add(member);
+    list.add(other);
+    expect(list.totalDiscounted()).toBe(1400);
+  });
+
+  test("total discounted of an empty list", () => {
+    expect(list.totalDiscounted()).toBe(0);
+  });
+
+  test("update the fee of a member", () => {
+    list.add(member);
+    list.updateFee("12345678", 2000);
+    expect(member.monthlyFee).toBe(2000);
+  });
+
+  test("reject updating the fee of a missing member", () => {
+    expect(() => list.updateFee("999", 2000)).toThrow();
+  });
+
+  test("reject an invalid fee when updating", () => {
+    list.add(member);
+    expect(() => list.updateFee("12345678", 0)).toThrow();
+  });
 });
